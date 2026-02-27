@@ -27,6 +27,7 @@ jobs:
       - name: Run FPS games workflow
         env:
           DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_WEBHOOK_URL }}
+          COZE_WORKLOAD_IDENTITY_API_KEY: ${{ secrets.COZE_WORKLOAD_IDENTITY_API_KEY }}
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
         run: |
           echo "开始执行FPS游戏榜单推送工作流..."
