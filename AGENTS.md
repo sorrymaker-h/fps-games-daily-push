@@ -1,6 +1,6 @@
 ## 项目概述
 - **名称**: PC端FPS游戏榜单推送工作流（国服+外服）
-- **功能**: 每天早上10点自动筛选全网热门PC端FPS游戏，区分国服和外服两个板块，各给出top5榜单（共10个游戏），并总结对应每一款游戏的当日资讯（活动、更新、赛事等），通过微信机器人发送到指定群组
+- **功能**: 每天早上10点自动筛选全网热门PC端FPS游戏，区分国服和外服两个板块，各给出top5榜单（共10个游戏），并总结对应每一款游戏的当日资讯（活动、更新、赛事等），通过钉钉机器人发送到指定群组
 
 ### 节点清单
 | 节点名 | 文件位置 | 类型 | 功能描述 | 分支逻辑 | 配置文件 |
@@ -10,7 +10,7 @@
 | prepare_loop | `graph.py` | task | 准备循环游戏列表（合并国服和外服） | - | - |
 | loop_news | `graph.py` | looparray | 循环搜索10个游戏的资讯 | - | - |
 | summarize_news | `nodes/summarize_news_node.py` | agent | 按国服和外服汇总资讯 | - | `config/summarize_news_llm_cfg.json` |
-| send_wechat | `nodes/send_wechat_node.py` | task | 发送微信消息 | - | - |
+| send_dingtalk | `nodes/send_dingtalk_node.py` | task | 发送钉钉消息 | - | - |
 
 **类型说明**: task(task节点) / agent(大模型) / condition(条件分支) / looparray(列表循环) / loopcond(条件循环)
 
@@ -29,7 +29,7 @@
 ## 技能使用
 - **web-search**: 节点 `search_games`、子图节点 `search_news` 使用，用于搜索热门FPS游戏和每款游戏的资讯
 - **llm**: 节点 `extract_top5`、`summarize_news`、子图节点 `extract_news` 使用，用于分析和整理游戏信息
-- **wechat-bot**: 节点 `send_wechat` 使用，用于发送微信消息到群组
+- **dingtalk-bot**: 节点 `send_dingtalk` 使用，用于发送钉钉消息到群组
 
 ## 配置文件说明
 - `config/extract_top5_llm_cfg.json`: 提取Top5游戏的模型配置
@@ -54,22 +54,23 @@
 6. **发送微信**: 通过微信机器人将报告发送到指定群组
 
 ## 注意事项
-- **微信机器人配置**：需要配置 webhook key 才能发送消息
-  - 参考 `WECHAT_BOT_SETUP.md` 文件进行配置
-  - 使用 `scripts/test_wechat_bot.py` 测试配置
-  - 设置环境变量：`export WECHAT_BOT_WEBHOOK_KEY=你的webhook_key`
+- **钉钉机器人配置**：项目已内置钉钉Webhook，可直接使用
+  - 如需自定义，设置环境变量：`export DINGTALK_WEBHOOK_URL=你的webhook_url`
+  - 使用 `scripts/test_dingtalk_bot.py` 测试配置
+  - 参考 `DINGTALK_BOT_SETUP.md` 文件
 - 工作流执行时间可能较长（需要多次网络搜索和大模型调用）
 - 建议在测试时使用 `--manual` 参数手动执行
 
 ## 快速开始
 
-### 1. 配置微信机器人
+### 1. 测试钉钉机器人（可选）
 ```bash
-# 设置webhook key
-export WECHAT_BOT_WEBHOOK_KEY=你的webhook_key
+# 测试内置配置
+python scripts/test_dingtalk_bot.py
 
-# 测试配置
-python scripts/test_wechat_bot.py
+# 或使用自定义配置
+export DINGTALK_WEBHOOK_URL=你的webhook_url
+python scripts/test_dingtalk_bot.py
 ```
 
 ### 2. 运行工作流

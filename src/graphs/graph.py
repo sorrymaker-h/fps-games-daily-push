@@ -14,7 +14,7 @@ from graphs.state import (
 from graphs.nodes.search_fps_games_node import search_fps_games_node
 from graphs.nodes.extract_top5_node import extract_top5_node
 from graphs.nodes.summarize_news_node import summarize_news_node
-from graphs.nodes.send_wechat_node import send_wechat_node
+from graphs.nodes.send_dingtalk_node import send_dingtalk_node
 
 
 # 准备循环节点的输入
@@ -90,7 +90,7 @@ builder.add_node("extract_top5", extract_top5_node, metadata={"type": "agent", "
 builder.add_node("prepare_loop", prepare_loop_news_node)
 builder.add_node("loop_news", loop_news_node, metadata={"type": "looparray"})
 builder.add_node("summarize_news", summarize_news_node, metadata={"type": "agent", "llm_cfg": "config/summarize_news_llm_cfg.json"})
-builder.add_node("send_wechat", send_wechat_node)
+builder.add_node("send_dingtalk", send_dingtalk_node)
 
 # 设置入口点
 builder.set_entry_point("search_games")
@@ -100,8 +100,8 @@ builder.add_edge("search_games", "extract_top5")
 builder.add_edge("extract_top5", "prepare_loop")
 builder.add_edge("prepare_loop", "loop_news")
 builder.add_edge("loop_news", "summarize_news")
-builder.add_edge("summarize_news", "send_wechat")
-builder.add_edge("send_wechat", END)
+builder.add_edge("summarize_news", "send_dingtalk")
+builder.add_edge("send_dingtalk", END)
 
 # 编译图
 main_graph = builder.compile()

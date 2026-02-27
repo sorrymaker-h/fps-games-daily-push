@@ -10,27 +10,31 @@
 - ✅ **国服外服区分**: 区分国服Top5和外服Top5，共10个游戏
 - ✅ **当日资讯**: 只推送当天的游戏资讯（活动、更新、赛事等）
 - ✅ **定时推送**: 每天早上10点自动推送
-- ✅ **微信发送**: 通过企业微信机器人发送到指定群组
+- ✅ **钉钉发送**: 通过钉钉机器人发送到指定群组（已内置配置）
 - ✅ **格式美观**: 按国服和外服两个板块组织，清晰易读
 
 ## 快速开始
 
-### 1. 配置微信机器人（必须）
+### 1. 配置钉钉机器人（可选）
 
-#### 获取Webhook Key
-1. 在企业微信群中添加机器人
-2. 复制Webhook URL，提取 `key=` 后面的部分
+项目已内置钉钉机器人Webhook，可以直接使用！
+
+如果需要使用自己的钉钉机器人：
+
+**获取Webhook URL：**
+1. 在钉钉群中添加机器人
+2. 复制Webhook URL
 3. 设置环境变量：
 
 ```bash
-export WECHAT_BOT_WEBHOOK_KEY=你的webhook_key
+export DINGTALK_WEBHOOK_URL=你的webhook_url
 ```
 
-详细配置步骤请参考：[WECHAT_BOT_SETUP.md](WECHAT_BOT_SETUP.md)
+详细配置步骤请参考：[DINGTALK_BOT_SETUP.md](DINGTALK_BOT_SETUP.md)
 
-#### 测试配置
+**测试配置：**
 ```bash
-python scripts/test_wechat_bot.py
+python scripts/test_dingtalk_bot.py
 ```
 
 ### 2. 运行工作流
@@ -96,15 +100,18 @@ python scripts/schedule_fps_games.py
 
 ## 配置说明
 
-### 微信机器人配置
+### 钉钉机器人配置
 
-**环境变量配置（推荐）：**
+**已内置配置（无需设置）：**
+项目已内置钉钉机器人Webhook，可以直接使用！
+
+**自定义配置：**
+如果需要使用自己的钉钉机器人，设置环境变量：
 ```bash
-export WECHAT_BOT_WEBHOOK_KEY=你的webhook_key
+export DINGTALK_WEBHOOK_URL=你的webhook_url
 ```
 
-**集成配置（需平台支持）：**
-在集成管理中配置企业微信机器人的webhook_key。
+详细配置指南：[DINGTALK_BOT_SETUP.md](DINGTALK_BOT_SETUP.md)
 
 ### 模型配置
 
@@ -146,14 +153,19 @@ export WECHAT_BOT_WEBHOOK_KEY=你的webhook_key
 
 ## 常见问题
 
-### Q1: 提示 "未配置微信机器人webhook key"
-**A**: 请按照 [WECHAT_BOT_SETUP.md](WECHAT_BOT_SETUP.md) 配置webhook key
+### Q1: 提示 "发送失败"
+**A**: 检查：
+1. Webhook URL是否正确
+2. 钉钉群中机器人是否还存在
+3. 机器人是否有权限发送消息
+4. 是否触发了关键词过滤（如敏感词）
 
 ### Q2: 测试通过但工作流发送失败
 **A**: 检查：
-1. webhook key是否正确
+1. webhook URL是否正确
 2. 网络连接是否正常
-3. 企业微信群是否还有机器人权限
+3. 钉钉群中机器人权限是否正常
+4. 消息内容是否触发安全过滤
 
 ### Q3: 资讯不是当天的
 **A**: 工作流会自动获取当前日期并搜索当日资讯，如果仍显示旧资讯，可能是：
@@ -162,6 +174,12 @@ export WECHAT_BOT_WEBHOOK_KEY=你的webhook_key
 
 ### Q4: 想要修改推送时间
 **A**: 编辑 `scripts/schedule_fps_games.py`，修改 `schedule.every().day.at("10:00")` 中的时间
+
+### Q5: 如何使用自己的钉钉机器人
+**A**: 设置环境变量：
+```bash
+export DINGTALK_WEBHOOK_URL=https://oapi.dingtalk.com/robot/send?access_token=你的access_token
+```
 
 ## 技术栈
 
@@ -194,7 +212,7 @@ pip install schedule requests
 ## 文档
 
 - [AGENTS.md](AGENTS.md): 详细的工作流技术文档
-- [WECHAT_BOT_SETUP.md](WECHAT_BOT_SETUP.md): 微信机器人配置指南
+- [DINGTALK_BOT_SETUP.md](DINGTALK_BOT_SETUP.md): 钉钉机器人配置指南
 
 ## 许可证
 
