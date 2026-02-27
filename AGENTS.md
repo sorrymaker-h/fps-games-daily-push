@@ -54,6 +54,29 @@
 6. **发送微信**: 通过微信机器人将报告发送到指定群组
 
 ## 注意事项
-- 微信机器人需要配置 webhook key 才能发送消息
+- **微信机器人配置**：需要配置 webhook key 才能发送消息
+  - 参考 `WECHAT_BOT_SETUP.md` 文件进行配置
+  - 使用 `scripts/test_wechat_bot.py` 测试配置
+  - 设置环境变量：`export WECHAT_BOT_WEBHOOK_KEY=你的webhook_key`
 - 工作流执行时间可能较长（需要多次网络搜索和大模型调用）
 - 建议在测试时使用 `--manual` 参数手动执行
+
+## 快速开始
+
+### 1. 配置微信机器人
+```bash
+# 设置webhook key
+export WECHAT_BOT_WEBHOOK_KEY=你的webhook_key
+
+# 测试配置
+python scripts/test_wechat_bot.py
+```
+
+### 2. 运行工作流
+```bash
+# 手动测试
+python scripts/schedule_fps_games.py --manual
+
+# 定时运行（每天早上10点）
+python scripts/schedule_fps_games.py
+```

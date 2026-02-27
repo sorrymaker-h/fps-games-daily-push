@@ -11,12 +11,21 @@ from graphs.state import SendWechatInput, SendWechatOutput
 
 def get_webhook_key():
     """获取微信机器人webhook key"""
-    client = Client()
-    wechat_bot_credential = client.get_integration_credential("integration-wechat-bot")
-    webhook_key = json.loads(wechat_bot_credential)["webhook_key"]
-    if "https" in webhook_key:
-        webhook_key = re.search(r"key=([a-zA-Z0-9-]+)", webhook_key).group(1)
-    return webhook_key
+    # 优先从环境变量读取
+    webhook_key = os.getenv("WECHAT_BOT_WEBHOOK_KEY")
+    if webhook_key:
+        return webhook_key
+    
+    # 如果环境变量没有，尝试从集成凭证读取
+    try:
+        client = Client()
+        wechat_bot_credential = client.get_integration_credential("integration-wechat-bot")
+        webhook_key = json.loads(wechat_bot_credential)["webhook_key"]
+        if "https" in webhook_key:
+            webhook_key = re.search(r"key=([a-zA-Z0-9-]+)", webhook_key).group(1)
+        return webhook_key
+    except Exception as e:
+        raise ValueError(f"未配置微信机器人webhook key，请设置环境变量 WECHAT_BOT_WEBHOOK_KEY 或配置集成凭证。错误: {e}")
 
 
 @observe
