@@ -28,9 +28,11 @@ jobs:
       - name: Run FPS games workflow
         env:
           DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_WEBHOOK_URL }}
+          PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
         run: |
           echo "开始执行FPS游戏榜单推送工作流..."
           echo "执行时间: $(date '+%Y-%m-%d %H:%M:%S')"
+          echo "PYTHONPATH: $PYTHONPATH"
           python scripts/schedule_fps_games.py --manual
           
       - name: Upload logs if failed

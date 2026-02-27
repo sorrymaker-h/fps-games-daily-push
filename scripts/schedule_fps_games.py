@@ -15,8 +15,8 @@ from datetime import datetime
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.graphs.graph import main_graph
-from src.graphs.state import GraphInput
+from graphs.graph import main_graph
+from graphs.state import GraphInput
 
 # 配置日志
 logging.basicConfig(
