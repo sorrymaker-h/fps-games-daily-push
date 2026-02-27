@@ -55,16 +55,19 @@ def extract_top5_node(state: ExtractTop5Input, config: RunnableConfig, runtime: 
     
     # 尝试从响应中提取JSON格式的游戏列表
     try:
-        # 查找JSON格式的列表
+        # 查找JSON格式的对象
         import re
-        json_match = re.search(r'\[.*?\]', response_text, re.DOTALL)
+        json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
         if json_match:
-            games_list = json.loads(json_match.group())
-            if isinstance(games_list, list) and len(games_list) >= 5:
-                games_list = games_list[:5]
-            return ExtractTop5Output(top5_games=games_list)
+            games_data = json.loads(json_match.group())
+            domestic_top5 = games_data.get("domestic_top5", [])
+            foreign_top5 = games_data.get("foreign_top5", [])
+            return ExtractTop5Output(
+                domestic_top5=domestic_top5[:5] if len(domestic_top5) > 5 else domestic_top5,
+                foreign_top5=foreign_top5[:5] if len(foreign_top5) > 5 else foreign_top5
+            )
     except (json.JSONDecodeError, Exception) as e:
         pass
     
     # 如果无法提取JSON，返回空列表，让用户知道解析失败
-    return ExtractTop5Output(top5_games=[])
+    return ExtractTop5Output(domestic_top5=[], foreign_top5=[])

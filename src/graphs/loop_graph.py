@@ -12,7 +12,7 @@ from graphs.nodes.extract_news_node import extract_news_node
 # 子图的全局状态
 class LoopGlobalState(BaseModel):
     """循环资讯子图的全局状态"""
-    top5_games: List[Dict[str, Any]] = Field(default=[], description="Top5热门FPS游戏列表")
+    games_list: List[Dict[str, Any]] = Field(default=[], description="游戏列表（包含国服和外服）")
     current_index: int = Field(default=0, description="当前处理的游戏索引")
     game_name: str = Field(default="", description="当前游戏名称")
     game_description: str = Field(default="", description="当前游戏描述")
@@ -23,7 +23,7 @@ class LoopGlobalState(BaseModel):
 # 子图的输入输出
 class LoopGraphInput(BaseModel):
     """子图输入"""
-    top5_games: List[Dict[str, Any]] = Field(..., description="Top5热门FPS游戏列表")
+    games_list: List[Dict[str, Any]] = Field(..., description="游戏列表（包含国服和外服共10个游戏）")
 
 
 class LoopGraphOutput(BaseModel):
@@ -39,8 +39,8 @@ def prepare_current_game_node(state: LoopGlobalState, config: RunnableConfig, ru
     """
     ctx = runtime.context
     
-    if state.current_index < len(state.top5_games):
-        current_game = state.top5_games[state.current_index]
+    if state.current_index < len(state.games_list):
+        current_game = state.games_list[state.current_index]
         game_name = current_game.get("name", "")
         game_description = current_game.get("description", "")
         
@@ -118,10 +118,20 @@ def has_more_games(state: LoopGlobalState) -> str:
     title: 判断是否还有游戏
     desc: 判断是否还有游戏需要处理
     """
-    if state.current_index < len(state.top5_games):
-        return "继续处理"
+    # 添加调试日志
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"判断循环: current_index={state.current_index}, games_list长度={len(state.games_list)}")
+    
+    result = ""
+    if state.current_index < len(state.games_list) and len(state.games_list) > 0:
+        result = "继续处理"
     else:
-        return "结束循环"
+        result = "结束循环"
+    
+    logger.info(f"循环判断结果: {result}")
+    
+    return result
 
 
 # 构建子图

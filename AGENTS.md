@@ -1,14 +1,15 @@
 ## 项目概述
-- **名称**: PC端FPS游戏榜单推送工作流
-- **功能**: 每天早上10点自动筛选全网热门PC端FPS游戏，给出top5榜单，并总结对应每一款游戏的大事件资讯（活动、更新、赛事等），通过微信机器人发送到指定群组
+- **名称**: PC端FPS游戏榜单推送工作流（国服+外服）
+- **功能**: 每天早上10点自动筛选全网热门PC端FPS游戏，区分国服和外服两个板块，各给出top5榜单（共10个游戏），并总结对应每一款游戏的当日资讯（活动、更新、赛事等），通过微信机器人发送到指定群组
 
 ### 节点清单
 | 节点名 | 文件位置 | 类型 | 功能描述 | 分支逻辑 | 配置文件 |
 |-------|---------|------|---------|---------|---------|
 | search_games | `nodes/search_fps_games_node.py` | task | 搜索热门PC端FPS游戏 | - | - |
-| extract_top5 | `nodes/extract_top5_node.py` | agent | 提取Top5 PC端游戏 | - | `config/extract_top5_llm_cfg.json` |
-| loop_news | `graph.py` | looparray | 循环搜索游戏资讯（调用子图） | - | - |
-| summarize_news | `nodes/summarize_news_node.py` | agent | 汇总所有游戏资讯 | - | `config/summarize_news_llm_cfg.json` |
+| extract_top5 | `nodes/extract_top5_node.py` | agent | 提取国服和外服Top5游戏 | - | `config/extract_top5_llm_cfg.json` |
+| prepare_loop | `graph.py` | task | 准备循环游戏列表（合并国服和外服） | - | - |
+| loop_news | `graph.py` | looparray | 循环搜索10个游戏的资讯 | - | - |
+| summarize_news | `nodes/summarize_news_node.py` | agent | 按国服和外服汇总资讯 | - | `config/summarize_news_llm_cfg.json` |
 | send_wechat | `nodes/send_wechat_node.py` | task | 发送微信消息 | - | - |
 
 **类型说明**: task(task节点) / agent(大模型) / condition(条件分支) / looparray(列表循环) / loopcond(条件循环)
@@ -44,12 +45,13 @@
 
 ## 工作流流程
 1. **搜索热门PC端FPS游戏**: 使用网络搜索获取热门PC端FPS游戏信息（排除手游）
-2. **提取Top5游戏**: 使用大模型分析搜索结果，提取排名前5的PC端FPS游戏
-3. **循环搜索资讯**: 对每款游戏执行：
-   - 搜索该游戏的最新资讯（活动、更新、赛事等）
+2. **提取国服和外服Top5**: 使用大模型分析搜索结果，区分国服和外服游戏，各提取排名前5的PC端FPS游戏（共10个）
+3. **准备循环**: 合并国服和外服游戏列表，准备循环处理
+4. **循环搜索资讯**: 对每款游戏执行：
+   - 搜索该游戏的当日资讯（活动、更新、赛事等）
    - 提取关键资讯
-4. **汇总资讯**: 将所有游戏的资讯整理成一份完整的报告
-5. **发送微信**: 通过微信机器人将报告发送到指定群组
+5. **汇总资讯**: 将所有游戏的资讯按国服和外服两个板块整理成一份完整的报告
+6. **发送微信**: 通过微信机器人将报告发送到指定群组
 
 ## 注意事项
 - 微信机器人需要配置 webhook key 才能发送消息
