@@ -19,8 +19,8 @@ def search_fps_games_node(state: SearchGamesInput, config: RunnableConfig, runti
     search_ctx = new_context(method="search_fps_games")
     client = SearchClient(ctx=search_ctx)
     
-    # 搜索热门FPS游戏
-    query = "热门FPS游戏排行 2024 2025 最受欢迎射击游戏"
+    # 搜索热门FPS游戏（仅限PC端）
+    query = "热门PC端FPS游戏排行 2024 2025 电脑射击游戏 Steam平台"
     response = client.web_search(
         query=query,
         count=10,

@@ -1,12 +1,12 @@
 ## 项目概述
-- **名称**: FPS游戏榜单推送工作流
-- **功能**: 每天早上10点自动筛选全网热门FPS游戏，给出top5榜单，并总结对应每一款游戏的大事件资讯（活动、更新、赛事等），通过微信机器人发送到指定群组
+- **名称**: PC端FPS游戏榜单推送工作流
+- **功能**: 每天早上10点自动筛选全网热门PC端FPS游戏，给出top5榜单，并总结对应每一款游戏的大事件资讯（活动、更新、赛事等），通过微信机器人发送到指定群组
 
 ### 节点清单
 | 节点名 | 文件位置 | 类型 | 功能描述 | 分支逻辑 | 配置文件 |
 |-------|---------|------|---------|---------|---------|
-| search_games | `nodes/search_fps_games_node.py` | task | 搜索热门FPS游戏 | - | - |
-| extract_top5 | `nodes/extract_top5_node.py` | agent | 提取Top5游戏 | - | `config/extract_top5_llm_cfg.json` |
+| search_games | `nodes/search_fps_games_node.py` | task | 搜索热门PC端FPS游戏 | - | - |
+| extract_top5 | `nodes/extract_top5_node.py` | agent | 提取Top5 PC端游戏 | - | `config/extract_top5_llm_cfg.json` |
 | loop_news | `graph.py` | looparray | 循环搜索游戏资讯（调用子图） | - | - |
 | summarize_news | `nodes/summarize_news_node.py` | agent | 汇总所有游戏资讯 | - | `config/summarize_news_llm_cfg.json` |
 | send_wechat | `nodes/send_wechat_node.py` | task | 发送微信消息 | - | - |
@@ -43,8 +43,8 @@
   - 手动测试: `python scripts/schedule_fps_games.py --manual`
 
 ## 工作流流程
-1. **搜索热门FPS游戏**: 使用网络搜索获取热门FPS游戏信息
-2. **提取Top5游戏**: 使用大模型分析搜索结果，提取排名前5的FPS游戏
+1. **搜索热门PC端FPS游戏**: 使用网络搜索获取热门PC端FPS游戏信息（排除手游）
+2. **提取Top5游戏**: 使用大模型分析搜索结果，提取排名前5的PC端FPS游戏
 3. **循环搜索资讯**: 对每款游戏执行：
    - 搜索该游戏的最新资讯（活动、更新、赛事等）
    - 提取关键资讯
