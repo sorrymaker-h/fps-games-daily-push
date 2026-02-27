@@ -23,7 +23,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install schedule requests python-dotenv
-          pip install coze-coding-dev-sdk
+          pip install coze-coding-dev-sdk markdown
       
       - name: Run FPS games workflow
         env:
