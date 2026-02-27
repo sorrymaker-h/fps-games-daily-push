@@ -37,11 +37,16 @@
 - `config/summarize_news_llm_cfg.json`: 汇总资讯的模型配置
 
 ## 定时任务
-- **文件**: `scripts/schedule_fps_games.py`
-- **功能**: 每天早上10点自动执行工作流
-- **运行方式**:
-  - 定时模式: `python scripts/schedule_fps_games.py`
-  - 手动测试: `python scripts/schedule_fps_games.py --manual`
+- **方式1（推荐）**: GitHub Actions 自动化
+  - 文件: `.github/workflows/fps-games-daily.yml`
+  - 功能: 每天北京时间10点自动执行
+  - 配置: 需要在GitHub Secrets中配置 `DINGTALK_WEBHOOK_URL`
+- **方式2**: 本地定时任务
+  - 文件: `scripts/schedule_fps_games.py`
+  - 功能: 每天早上10点自动执行工作流
+  - 运行方式:
+    - 定时模式: `python scripts/schedule_fps_games.py`
+    - 手动测试: `python scripts/schedule_fps_games.py --manual`
 
 ## 工作流流程
 1. **搜索热门PC端FPS游戏**: 使用网络搜索获取热门PC端FPS游戏信息（排除手游）

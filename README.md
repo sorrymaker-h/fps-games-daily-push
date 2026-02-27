@@ -15,38 +15,52 @@
 
 ## 快速开始
 
-### 1. 配置钉钉机器人（可选）
+### 方式1：GitHub Actions 自动化（推荐）🌟
 
-项目已内置钉钉机器人Webhook，可以直接使用！
+**优势**：
+- ✅ 完全免费
+- ✅ 完全云端，不需要服务器
+- ✅ 每天10点自动推送
+- ✅ 可视化监控执行记录
 
-如果需要使用自己的钉钉机器人：
+**配置步骤**（5分钟搞定）：
 
-**获取Webhook URL：**
-1. 在钉钉群中添加机器人
-2. 复制Webhook URL
-3. 设置环境变量：
+1. **推送到GitHub**
+   ```bash
+   # 参考 GITHUB_PUSH_GUIDE.md
+   git add .
+   git commit -m "Add FPS games workflow"
+   git push
+   ```
+
+2. **配置Secrets**
+   - 进入仓库 Settings → Secrets → Actions
+   - 添加 `DINGTALK_WEBHOOK_URL`
+   - Value: `https://oapi.dingtalk.com/robot/send?access_token=5f30c823eb6bf1a6c16fae13f002d068b6b39bc7857e6eb651f3bfc56e8a85f3`
+
+3. **测试工作流**
+   - 进入仓库 Actions 页面
+   - 点击 Run workflow 手动测试
+
+4. **完成！** 每天10点自动推送 🎉
+
+详细配置指南：[GITHUB_ACTIONS_SETUP.md](GITHUB_ACTIONS_SETUP.md)
+
+---
+
+### 方式2：本地定时任务（cron）
+
+**适用场景**：有本地服务器或24小时运行的电脑
+
+配置步骤请参考：[DEPLOYMENT.md](DEPLOYMENT.md)
+
+---
+
+### 方式3：手动执行（测试用）
 
 ```bash
-export DINGTALK_WEBHOOK_URL=你的webhook_url
-```
-
-详细配置步骤请参考：[DINGTALK_BOT_SETUP.md](DINGTALK_BOT_SETUP.md)
-
-**测试配置：**
-```bash
-python scripts/test_dingtalk_bot.py
-```
-
-### 2. 运行工作流
-
-#### 手动测试（推荐首次使用）
-```bash
+# 立即执行一次，用于测试
 python scripts/schedule_fps_games.py --manual
-```
-
-#### 定时运行（每天早上10点）
-```bash
-python scripts/schedule_fps_games.py
 ```
 
 ## 工作流流程
