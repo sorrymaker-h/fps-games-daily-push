@@ -1,4 +1,4 @@
-name: FPS Games Daily Newsletter
+name: FPS Games Auto Push
 
 on:
   # 每天 UTC 2:00 触发（北京时间 10:00）
@@ -9,64 +9,61 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-fps-news:
+  call-coze-api:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-      - name: Call Coze Workflow API
-        id: call_api
+      - name: Run Coze Workflow
+        id: execute
         run: |
           echo "================================"
-          echo "🚀 开始调用 Coze 工作流 API"
+          echo "🚀 FPS Games Daily Newsletter"
           echo "================================"
           echo ""
 
-          # 调用 API
-          echo "📤 发送请求到: https://zky2h3482d.coze.site/run"
+          # 调用 Coze API
+          echo "📤 Calling Coze API..."
           response=$(curl -s -w "\n%{http_code}" \
             -X POST "https://zky2h3482d.coze.site/run" \
             -H "Authorization: Bearer ${{ secrets.COZE_API_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d '{"trigger_type": "scheduled"}')
 
-          echo ""
-
-          # 提取状态码和响应体
+          # 解析响应
           http_code=$(echo "$response" | tail -n1)
           body=$(echo "$response" | head -n -1)
 
-          echo "================================"
-          echo "📊 API 响应结果"
-          echo "================================"
-          echo "HTTP 状态码: $http_code"
-          echo ""
-          echo "响应内容:"
+          echo "HTTP Status: $http_code"
+          echo "Response:"
           echo "$body"
-          echo "================================"
           echo ""
 
-          # 检查是否成功
+          # 检查结果
           if [ "$http_code" = "200" ]; then
-            echo "✅ 工作流调用成功！"
             echo "status=success" >> $GITHUB_OUTPUT
+            echo "================================"
+            echo "✅ SUCCESS"
+            echo "================================"
           else
-            echo "❌ 工作流调用失败！"
             echo "status=failed" >> $GITHUB_OUTPUT
+            echo "================================"
+            echo "❌ FAILED"
+            echo "================================"
             exit 1
           fi
 
-      - name: Summary
+      - name: Result Summary
         if: always()
         run: |
           echo "================================"
-          echo "📝 执行总结"
+          echo "📊 Execution Result"
           echo "================================"
-          if [ "${{ steps.call_api.outputs.status }}" = "success" ]; then
-            echo "✅ FPS 游戏日报推送成功！"
-            echo "请检查钉钉群是否收到消息。"
+          if [ "${{ steps.execute.outputs.status }}" = "success" ]; then
+            echo "✅ Workflow completed successfully!"
+            echo "📱 Check DingTalk group for the message."
           else
-            echo "⚠️ FPS 游戏日报推送失败"
-            echo "请查看上方的详细日志。"
+            echo "❌ Workflow failed!"
+            echo "🔍 Please check the logs above."
           fi
           echo "================================"
