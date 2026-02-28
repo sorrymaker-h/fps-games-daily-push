@@ -2,7 +2,7 @@
 
 ## 项目简介
 
-这是一个自动化工作流，每天早上10点自动推送PC端FPS游戏的当日资讯到微信企业群。
+这是一个自动化工作流，每天早上10点自动推送PC端FPS游戏的当日资讯到钉钉群。
 
 ## 功能特性
 
@@ -15,36 +15,38 @@
 
 ## 快速开始
 
-### 方式1：GitHub Actions 自动化（推荐）🌟
+### 方式1：Coze Cron 定时任务（推荐）🌟
 
 **优势**：
 - ✅ 完全免费
 - ✅ 完全云端，不需要服务器
 - ✅ 每天10点自动推送
-- ✅ 可视化监控执行记录
+- ✅ Coze 官方支持，稳定可靠
+- ✅ 无需额外 API Key，完全兼容 Coze Coding SDK
 
-**配置步骤**（5分钟搞定）：
+**配置步骤**（3分钟搞定）：
 
-1. **推送到GitHub**
-   ```bash
-   # 参考 GITHUB_PUSH_GUIDE.md
-   git add .
-   git commit -m "Add FPS games workflow"
-   git push
-   ```
+1. **登录 Coze 平台**
+   - 打开：https://www.coze.cn/
+   - 使用手机号或邮箱登录
 
-2. **配置Secrets**
-   - 进入仓库 Settings → Secrets → Actions
-   - 添加 `DINGTALK_WEBHOOK_URL`
-   - Value: `https://oapi.dingtalk.com/robot/send?access_token=5f30c823eb6bf1a6c16fae13f002d068b6b39bc7857e6eb651f3bfc56e8a85f3`
+2. **部署工作流**
+   - 进入 "工作流" 页面
+   - 找到 "游戏榜单工作流"
+   - 点击 "部署" → "Coze Cloud"
+   - 等待部署完成
 
-3. **测试工作流**
-   - 进入仓库 Actions 页面
-   - 点击 Run workflow 手动测试
+3. **配置定时任务**
+   - 添加定时任务
+   - Cron 表达式：`0 10 * * *`（每天10点）
+   - 配置环境变量：
+     - Name: `DINGTALK_WEBHOOK_URL`
+     - Value: `https://oapi.dingtalk.com/robot/send?access_token=5f30c823eb6bf1a6c16fae13f002d068b6b39bc7857e6eb651f3bfc56e8a85f3`
+   - 启用定时任务
 
 4. **完成！** 每天10点自动推送 🎉
 
-详细配置指南：[GITHUB_ACTIONS_SETUP.md](GITHUB_ACTIONS_SETUP.md)
+详细配置指南：[COZE_CRON_SETUP.md](COZE_CRON_SETUP.md)
 
 ---
 
@@ -80,7 +82,7 @@ python scripts/schedule_fps_games.py --manual
    ├─ 国服板块（5款游戏）
    └─ 外服板块（5款游戏）
    ↓
-6. 发送微信消息到群组
+6. 发送钉钉消息到群组
 ```
 
 ## 项目结构
@@ -98,7 +100,7 @@ python scripts/schedule_fps_games.py --manual
 │   │       ├── search_game_news_node.py      # 搜索游戏资讯
 │   │       ├── extract_news_node.py          # 提取关键资讯
 │   │       ├── summarize_news_node.py        # 汇总资讯
-│   │       └── send_wechat_node.py           # 发送微信
+│   │       └── send_dingtalk_node.py         # 发送钉钉消息
 │   └── ...
 ├── config/                              # 配置文件
 │   ├── extract_top5_llm_cfg.json        # Top5提取配置
@@ -106,9 +108,10 @@ python scripts/schedule_fps_games.py --manual
 │   └── summarize_news_llm_cfg.json      # 资讯汇总配置
 ├── scripts/
 │   ├── schedule_fps_games.py            # 定时任务脚本
-│   └── test_wechat_bot.py               # 微信机器人测试
-├── WECHAT_BOT_SETUP.md                  # 微信机器人配置指南
-├── AGENTS.md                            # 工作流详细文档
+│   └── test_dingtalk_bot.py              # 钉钉机器人测试
+├── DINGTALK_BOT_SETUP.md                 # 钉钉机器人配置指南
+├── COZE_CRON_SETUP.md                    # Coze Cron配置指南
+├── AGENTS.md                             # 工作流详细文档
 └── README.md                            # 本文件
 ```
 
