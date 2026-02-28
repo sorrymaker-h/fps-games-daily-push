@@ -1,19 +1,20 @@
 import os
 import json
-from typing import Dict, Any
 from jinja2 import Template
 from langchain_core.runnables import RunnableConfig
 from langgraph.runtime import Runtime
 from coze_coding_utils.runtime_ctx.context import Context
-from utils.llm_client import LLMClient as DeepSeekLLMClient
+from coze_coding_dev_sdk import LLMClient
+from langchain_core.messages import SystemMessage, HumanMessage
+from datetime import datetime
 from graphs.state import ExtractNewsInput, ExtractNewsOutput
 
 
 def extract_news_node(state: ExtractNewsInput, config: RunnableConfig, runtime: Runtime[Context]) -> ExtractNewsOutput:
     """
-    title: 提取关键资讯
-    desc: 从搜索结果中提取游戏的关键资讯，包括活动、更新、赛事等
-    integrations: deepseek-llm
+    title: 提取资讯
+    desc: 从搜索结果中提取出当日相关资讯
+    integrations: 大语言模型
     """
     ctx = runtime.context
 
@@ -26,34 +27,38 @@ def extract_news_node(state: ExtractNewsInput, config: RunnableConfig, runtime: 
     sp = _cfg.get("sp", "")
     up = _cfg.get("up", "")
 
-    # 创建 DeepSeek LLM 客户端
-    client = DeepSeekLLMClient(
-        api_key=os.getenv("LLM_API_KEY"),
-        model="deepseek-chat"
-    )
+    # 创建 LLM 客户端
+    client = LLMClient(ctx=ctx)
+
+    # 获取当前日期
+    current_date = datetime.now().strftime("%Y年%m月%d日")
 
     # 渲染用户提示词
     up_tpl = Template(up)
     user_prompt = up_tpl.render({
+        "current_date": current_date,
         "game_name": state.game_name,
         "news_search_results": state.news_search_results
     })
 
     # 构建消息
     messages = [
-        {"role": "system", "content": sp},
-        {"role": "user", "content": user_prompt}
+        SystemMessage(content=sp),
+        HumanMessage(content=user_prompt)
     ]
 
     # 调用大模型
-    response = client.chat_completion(
+    response = client.invoke(
         messages=messages,
-        temperature=llm_config.get("temperature", 0.3),
-        max_tokens=llm_config.get("max_completion_tokens", 2000)
+        model=llm_config.get("model", "doubao-seed-1-8-251228"),
+        temperature=llm_config.get("temperature", 0.7),
+        max_completion_tokens=llm_config.get("max_completion_tokens", 2000)
     )
 
     # 获取响应文本
-    response_text = client.extract_text(response)
+    response_text = response.content
+    if isinstance(response_text, list):
+        response_text = str(response_text)
 
     return ExtractNewsOutput(
         game_name=state.game_name,

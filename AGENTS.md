@@ -20,17 +20,22 @@
 | news_loop_graph | `graphs/loop_graph.py` | 循环处理每个游戏的资讯 | extract_top5 |
 
 ## 技能使用
-- **DuckDuckGo 搜索**: `search_fps_games_node`、`search_game_news_node`
-- **DeepSeek API**: `extract_top5_node`、`extract_news_node`、`summarize_news_node`
+- **Coze Coding SDK**: 
+  - 搜索功能: `search_fps_games_node`、`search_game_news_node`
+  - LLM 功能: `extract_top5_node`、`extract_news_node`、`summarize_news_node`
+- **钉钉机器人**: `send_dingtalk_node`
 
 ## 部署方式
-- **GitHub Actions**: 定时触发（每天北京时间 10:00）
+- **Coze Coding 平台**: 使用平台内置的定时任务功能
 - **环境变量**:
-  - `DEEPSEEK_API_KEY`: DeepSeek API 密钥
-  - `DINGTALK_WEBHOOK_URL`: 钉钉机器人 Webhook URL
+  - `DINGTALK_WEBHOOK_URL`: 钉钉机器人 Webhook URL（已内置在代码中）
 
 ## 技术栈
 - **工作流引擎**: LangGraph 1.0
-- **LLM**: DeepSeek API
-- **搜索引擎**: DuckDuckGo
+- **LLM**: Coze Coding SDK（豆包/DeepSeek 等模型）
+- **搜索引擎**: Coze Coding SDK
 - **Python 版本**: 3.12
+
+## 钉钉机器人配置
+- **Webhook URL**: `https://oapi.dingtalk.com/robot/send?access_token=5f30c823eb6bf1a6c16fae13f002d068b6b39bc7857e6eb651f3bfc56e8a85f3`
+- **配置位置**: `src/graphs/nodes/send_dingtalk_node.py`

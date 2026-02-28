@@ -5,7 +5,8 @@ from jinja2 import Template
 from langchain_core.runnables import RunnableConfig
 from langgraph.runtime import Runtime
 from coze_coding_utils.runtime_ctx.context import Context
-from utils.llm_client import LLMClient as DeepSeekLLMClient
+from coze_coding_dev_sdk import LLMClient
+from langchain_core.messages import SystemMessage, HumanMessage
 from datetime import datetime
 from graphs.state import SummarizeNewsInput, SummarizeNewsOutput
 
@@ -14,7 +15,7 @@ def summarize_news_node(state: SummarizeNewsInput, config: RunnableConfig, runti
     """
     title: 汇总资讯
     desc: 将所有游戏的资讯汇总成一份完整的报告
-    integrations: deepseek-llm
+    integrations: 大语言模型
     """
     ctx = runtime.context
 
@@ -27,11 +28,8 @@ def summarize_news_node(state: SummarizeNewsInput, config: RunnableConfig, runti
     sp = _cfg.get("sp", "")
     up = _cfg.get("up", "")
 
-    # 创建 DeepSeek LLM 客户端
-    client = DeepSeekLLMClient(
-        api_key=os.getenv("LLM_API_KEY"),
-        model="deepseek-chat"
-    )
+    # 创建 LLM 客户端
+    client = LLMClient(ctx=ctx)
 
     # 准备游戏资讯列表文本
     news_list_text = ""
@@ -52,18 +50,21 @@ def summarize_news_node(state: SummarizeNewsInput, config: RunnableConfig, runti
 
     # 构建消息
     messages = [
-        {"role": "system", "content": sp},
-        {"role": "user", "content": user_prompt}
+        SystemMessage(content=sp),
+        HumanMessage(content=user_prompt)
     ]
 
     # 调用大模型
-    response = client.chat_completion(
+    response = client.invoke(
         messages=messages,
+        model=llm_config.get("model", "doubao-seed-1-8-251228"),
         temperature=llm_config.get("temperature", 0.7),
-        max_tokens=llm_config.get("max_completion_tokens", 4000)
+        max_completion_tokens=llm_config.get("max_completion_tokens", 4000)
     )
 
     # 获取响应文本
-    response_text = client.extract_text(response)
+    response_text = response.content
+    if isinstance(response_text, list):
+        response_text = str(response_text)
 
     return SummarizeNewsOutput(summarized_news=response_text)
