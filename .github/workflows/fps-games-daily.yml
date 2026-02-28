@@ -29,6 +29,7 @@ jobs:
           DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_WEBHOOK_URL }}
           COZE_WORKLOAD_IDENTITY_API_KEY: ${{ secrets.COZE_WORKLOAD_IDENTITY_API_KEY }}
           COZE_INTEGRATION_BASE_URL: https://integration.coze.cn
+          COZE_INTEGRATION_MODEL_BASE_URL: https://integration.coze.cn/api/v3
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
         run: |
           echo "开始执行FPS游戏榜单推送工作流..."
