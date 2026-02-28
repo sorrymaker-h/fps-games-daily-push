@@ -1,0 +1,10 @@
+Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
+Collecting duckduckgo-search
+  Downloading https://mirrors.aliyun.com/pypi/packages/db/72/c027b3b488b1010cf71670032fcf7e681d44b81829d484bb04e31a949a8d/duckduckgo_search-8.1.1-py3-none-any.whl (18 kB)
+Requirement already satisfied: click>=8.1.8 in /usr/local/lib/python3.12/dist-packages (from duckduckgo-search) (8.3.1)
+Collecting primp>=0.15.0 (from duckduckgo-search)
+  Downloading https://mirrors.aliyun.com/pypi/packages/6a/9f/f563eaeb654749fa519c627b1f1ab93cf875537c56123fba507f74b647fc/primp-1.1.1-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.1/4.1 MB 12.6 MB/s eta 0:00:00
+Requirement already satisfied: lxml>=5.3.0 in /usr/local/lib/python3.12/dist-packages (from duckduckgo-search) (6.0.2)
+Installing collected packages: primp, duckduckgo-search
+Successfully installed duckduckgo-search-8.1.1 primp-1.1.1
