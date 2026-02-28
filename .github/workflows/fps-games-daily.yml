@@ -1,0 +1,53 @@
+name: FPS Games Daily Newsletter
+
+on:
+  # 每天 UTC 2:00 触发（北京时间 10:00）
+  schedule:
+    - cron: '0 2 * * *'
+
+  # 允许手动触发
+  workflow_dispatch:
+
+jobs:
+  run-fps-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call Coze Workflow API
+        id: call_api
+        run: |
+          echo "🚀 调用 Coze 工作流 API..."
+
+          # 调用 API
+          response=$(curl -X POST "https://zky2h3482d.coze.site/run" \
+            -H "Authorization: Bearer ${{ secrets.COZE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"trigger_type": "scheduled"}' \
+            -w "\n%{http_code}")
+
+          # 提取状态码和响应体
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n -1)
+
+          echo "HTTP 状态码: $http_code"
+          echo "响应内容:"
+          echo "$body"
+
+          # 检查是否成功
+          if [ "$http_code" = "200" ]; then
+            echo "✅ 工作流调用成功！"
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ 工作流调用失败！"
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Notify Result
+        if: always()
+        run: |
+          if [ "${{ steps.call_api.outputs.status }}" = "success" ]; then
+            echo "🎉 FPS 游戏日报推送成功！"
+          else
+            echo "⚠️ FPS 游戏日报推送失败，请检查日志"
+          fi
