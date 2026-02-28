@@ -5,8 +5,8 @@ from pydantic import BaseModel, Field
 class GlobalState(BaseModel):
     """全局状态定义"""
     search_results: str = Field(default="", description="热门FPS游戏搜索结果")
-    domestic_top3: List[Dict[str, Any]] = Field(default=[], description="国服Top3热门FPS游戏列表")
-    foreign_top2: List[Dict[str, Any]] = Field(default=[], description="外服Top2热门FPS游戏列表")
+    domestic_top5: List[Dict[str, Any]] = Field(default=[], description="国服Top5热门FPS游戏列表")
+    foreign_top5: List[Dict[str, Any]] = Field(default=[], description="外服Top5热门FPS游戏列表")
     game_news_list: List[Dict[str, Any]] = Field(default=[], description="每款游戏的资讯列表")
     summarized_news: str = Field(default="", description="汇总后的游戏资讯")
     send_result: str = Field(default="", description="微信发送结果")
@@ -40,8 +40,8 @@ class ExtractTop5Input(BaseModel):
 
 class ExtractTop5Output(BaseModel):
     """提取Top5游戏节点的输出"""
-    domestic_top3: List[Dict[str, Any]] = Field(..., description="国服Top3热门FPS游戏列表，每个元素包含name(游戏名)、description(描述)、heat_score(热度分数)等")
-    foreign_top2: List[Dict[str, Any]] = Field(..., description="外服Top2热门FPS游戏列表，每个元素包含name(游戏名)、description(描述)、heat_score(热度分数)等")
+    domestic_top5: List[Dict[str, Any]] = Field(..., description="国服Top5热门FPS游戏列表，每个元素包含name(游戏名)、description(描述)、heat_score(热度分数)等")
+    foreign_top5: List[Dict[str, Any]] = Field(..., description="外服Top5热门FPS游戏列表，每个元素包含name(游戏名)、description(描述)、heat_score(热度分数)等")
 
 
 class LoopNewsInput(BaseModel):

@@ -56,14 +56,14 @@ def extract_top5_node(state: ExtractTop5Input, config: RunnableConfig, runtime: 
     # 解析 JSON 结果
     try:
         result = json.loads(response_text)
-        domestic_top3 = result.get("domestic_top3", [])
-        foreign_top2 = result.get("foreign_top2", [])
+        domestic_top5 = result.get("domestic_top5", [])
+        foreign_top5 = result.get("foreign_top5", [])
     except json.JSONDecodeError:
         # 如果解析失败，使用默认值
-        domestic_top3 = []
-        foreign_top2 = []
+        domestic_top5 = []
+        foreign_top5 = []
     
     return ExtractTop5Output(
-        domestic_top3=domestic_top3,
-        foreign_top2=foreign_top2
+        domestic_top5=domestic_top5,
+        foreign_top5=foreign_top5
     )
